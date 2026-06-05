@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FraudGuard SA – Job Posting Fraud Detector</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  :root {
+    --bg: #0d0f14;
+    --surface: #13161e;
+    --surface2: #1a1e29;
+    --border: #252a38;
+    --text: #e8eaf0;
+    --text-muted: #7880a0;
+    --accent: #4f8ef7;
+    --accent2: #7c5cfa;
+    --safe: #22c55e;
+    --safe-bg: rgba(34,197,94,0.08);
+    --warning: #f59e0b;
+    --warning-bg: rgba(245,158,11,0.08);
+    --danger: #ef4444;
+    --danger-bg: rgba(239,68,68,0.08);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  /* Background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  /* Header */
+  header { margin-bottom: 48px; }
+  .logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+  .logo-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px; font-weight: 800; letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #e8eaf0 30%, #7c5cfa);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .tagline { color: var(--text-muted); font-size: 14px; margin-top: 4px; letter-spacing: 0.2px; }
+
+  /* Badge */
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: 4px 12px 4px 8px;
+    font-size: 11px; color: var(--text-muted); margin-top: 16px;
+    letter-spacing: 0.3px;
+  }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--safe); }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+
+  .card-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-muted); margin-bottom: 12px;
+  }
+
+  textarea {
+    width: 100%;
+    height: 200px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 300;
+    line-height: 1.65;
+    padding: 16px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--text-muted); }
+
+  .btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+
+  button {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700; font-size: 13px;
+    letter-spacing: 0.3px;
+    border: none; border-radius: 10px;
+    cursor: pointer; transition: all 0.2s;
+    padding: 12px 24px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+  }
+  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .btn-ghost {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
+
+  /* Examples */
+  .examples { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+  .ex-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px; font-weight: 400;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text-muted); border-radius: 20px;
+    padding: 5px 12px; cursor: pointer; transition: all 0.2s;
+  }
+  .ex-btn:hover { color: var(--text); border-color: var(--accent); }
+
+  /* Spinner */
+  .spinner {
+    display: none; width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Result card */
+  #result { display: none; }
+
+  .result-header {
+    display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
+  }
+
+  .result-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .result-icon.safe     { background: var(--safe-bg); }
+  .result-icon.warning  { background: var(--warning-bg); }
+  .result-icon.danger   { background: var(--danger-bg); }
+
+  .result-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 24px; font-weight: 800; letter-spacing: -0.5px;
+  }
+  .result-label.legitimate { color: var(--safe); }
+  .result-label.suspicious  { color: var(--warning); }
+  .result-label.fraudulent  { color: var(--danger); }
+
+  .result-sub { color: var(--text-muted); font-size: 13px; margin-top: 3px; }
+
+  /* Probability bar */
+  .prob-row { margin-bottom: 20px; }
+  .prob-label-row {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: var(--text-muted); margin-bottom: 6px;
+  }
+  .prob-track {
+    height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden;
+  }
+  .prob-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 0.8s cubic-bezier(.4,0,.2,1);
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+  }
+  .prob-fill.high  { background: linear-gradient(90deg, var(--danger), #b91c1c); }
+  .prob-fill.medium{ background: linear-gradient(90deg, var(--warning), #d97706); }
+  .prob-fill.low   { background: linear-gradient(90deg, var(--safe), #16a34a); }
+
+  /* Advice box */
+  .advice-box {
+    border-radius: 10px; padding: 14px 16px;
+    font-size: 13px; line-height: 1.6; margin-bottom: 20px;
+  }
+  .advice-box.legitimate { background: var(--safe-bg); border-left: 3px solid var(--safe); }
+  .advice-box.suspicious  { background: var(--warning-bg); border-left: 3px solid var(--warning); }
+  .advice-box.fraudulent  { background: var(--danger-bg); border-left: 3px solid var(--danger); }
+
+  /* Indicators */
+  .indicators-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+    text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;
+  }
+  .indicator-list { display: flex; flex-direction: column; gap: 7px; }
+  .indicator-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; color: var(--text);
+  }
+  .indicator-dot {
+    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    background: var(--danger);
+  }
+  .no-indicators { font-size: 13px; color: var(--text-muted); }
+
+  /* Footer */
+  footer {
+    margin-top: 48px; padding-top: 24px;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted); font-size: 12px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+  footer span { opacity: 0.6; }
+
+  @media (max-width: 480px) {
+    h1 { font-size: 22px; }
+    .btn-row { flex-direction: column; }
+    button { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="logo-row">
+      <div class="logo-icon">🛡️</div>
+      <h1>FraudGuard SA</h1>
+    </div>
+    <p class="tagline">Machine Learning–Based Fraud Detection for South African Online Job Postings</p>
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Random Forest · TF-IDF · EMSCAD Dataset · POPIA Compliant
+    </div>
+  </header>
+
+  <!-- Input card -->
+  <div class="card">
+    <div class="card-label">Paste Job Posting</div>
+    <textarea id="posting-input"
+      placeholder="Paste the full text of a job posting here and click Analyse…&#10;&#10;Example: URGENT HIRING — Work from home, earn R50 000 per month, no experience needed. Send CV and ID copy now…"></textarea>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="analyse-btn" onclick="analyse()">
+        <span class="spinner" id="spinner"></span>
+        <span id="btn-text">Analyse Posting</span>
+      </button>
+      <button class="btn-ghost" onclick="clearAll()">Clear</button>
+    </div>
+
+    <div style="margin-top:18px;">
+      <div class="card-label" style="margin-bottom:8px;">Try an example</div>
+      <div class="examples">
+        <button class="ex-btn" onclick="loadExample('fraud1')">🚨 Work-from-home scam</button>
+        <button class="ex-btn" onclick="loadExample('fraud2')">🚨 Fee-required vacancy</button>
+        <button class="ex-btn" onclick="loadExample('legit1')">✅ Software developer post</button>
+        <button class="ex-btn" onclick="loadExample('legit2')">✅ Accountant vacancy</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result card -->
+  <div class="card" id="result">
+    <div class="result-header">
+      <div class="result-icon" id="result-icon"></div>
+      <div>
+        <div class="result-label" id="result-label"></div>
+        <div class="result-sub" id="result-sub"></div>
+      </div>
+    </div>
+
+    <div class="prob-row">
+      <div class="prob-label-row">
+        <span>Fraud Risk Score</span>
+        <span id="prob-text"></span>
+      </div>
+      <div class="prob-track"><div class="prob-fill" id="prob-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="advice-box" id="advice-box"></div>
+
+    <div class="indicators-title">Risk Indicators Detected</div>
+    <div class="indicator-list" id="indicator-list"></div>
+  </div>
+
+  <footer>
+    <span>FraudGuard SA — PG Dip IT Research Prototype · CUT 2026</span>
+    <span>Random Forest + TF-IDF · EMSCAD + SA Data</span>
+  </footer>
+</div>
+
+<script>
+const examples = {
+  fraud1: "URGENT HIRING! Work from home and earn R50 000 per month. No experience needed. No qualifications required. Limited slots available — apply immediately. Send your CV, ID copy and banking details to secure your position today.",
+  fraud2: "Vacancy: Home Packer. Earn R800 per parcel working from home. No experience required. A refundable registration fee of R500 is required to secure your materials. WhatsApp us urgently — limited positions available.",
+  legit1: "Software Developer position available. BCom Computer Science or equivalent required. Minimum 3 years experience in Java and Python. Knowledge of REST APIs and Git essential. Competitive salary package negotiable based on experience. Please submit CV and portfolio to hr@techfirm.co.za.",
+  legit2: "Accountant vacancy — SAICA articles completed essential. Minimum 5 years audit experience required. Proficiency in Sage and MS Excel. Package R45 000 to R65 000 per month depending on experience. Applications open to South African citizens only. Send CV to finance@company.co.za."
+};
+
+function loadExample(key) {
+  document.getElementById('posting-input').value = examples[key];
+  document.getElementById('result').style.display = 'none';
+}
+
+function clearAll() {
+  document.getElementById('posting-input').value = '';
+  document.getElementById('result').style.display = 'none';
+}
+
+async function analyse() {
+  const text = document.getElementById('posting-input').value.trim();
+  if (!text) { alert('Please paste a job posting first.'); return; }
+
+  const btn = document.getElementById('analyse-btn');
+  const spinner = document.getElementById('spinner');
+  const btnText = document.getElementById('btn-text');
+  btn.disabled = true;
+  spinner.style.display = 'inline-block';
+  btnText.textContent = 'Analysing…';
+
+  try {
+    const res = await fetch('/analyse', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    renderResult(data);
+  } catch(e) {
+    alert('Error connecting to server. Make sure the Flask app is running.');
+  } finally {
+    btn.disabled = false;
+    spinner.style.display = 'none';
+    btnText.textContent = 'Analyse Posting';
+  }
+}
+
+function renderResult(data) {
+  if (data.error) { alert(data.error); return; }
+
+  const icons = { safe: '✅', warning: '⚠️', danger: '🚨' };
+  const subs  = {
+    legitimate: 'No significant fraud indicators found',
+    suspicious:  'Some risk indicators present — proceed with care',
+    fraudulent:  'Multiple fraud indicators detected'
+  };
+
+  document.getElementById('result-icon').className = 'result-icon ' + data.icon;
+  document.getElementById('result-icon').textContent = icons[data.icon];
+  document.getElementById('result-label').className  = 'result-label ' + data.css;
+  document.getElementById('result-label').textContent = data.label;
+  document.getElementById('result-sub').textContent   = subs[data.css];
+
+  // Probability bar
+  const fillEl = document.getElementById('prob-fill');
+  const probClass = data.fraud_prob >= 70 ? 'high' : data.fraud_prob >= 40 ? 'medium' : 'low';
+  fillEl.className = 'prob-fill ' + probClass;
+  setTimeout(() => { fillEl.style.width = data.fraud_prob + '%'; }, 50);
+  document.getElementById('prob-text').textContent = data.fraud_prob + '% fraud probability';
+
+  // Advice
+  const adviceEl = document.getElementById('advice-box');
+  adviceEl.className = 'advice-box ' + data.css;
+  adviceEl.textContent = data.advice;
+
+  // Indicators
+  const list = document.getElementById('indicator-list');
+  list.innerHTML = '';
+  if (data.indicators && data.indicators.length > 0) {
+    data.indicators.forEach(ind => {
+      list.innerHTML += `<div class="indicator-item"><span class="indicator-dot"></span>${ind}</div>`;
+    });
+  } else {
+    list.innerHTML = '<div class="no-indicators">No specific risk indicators flagged.</div>';
+  }
+
+  const resultCard = document.getElementById('result');
+  resultCard.style.display = 'block';
+  resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+</body>
+</html>
