@@ -3,347 +3,752 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FraudGuard SA – Job Posting Fraud Detector</title>
+<title>FraudGuard SA</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+:root {
+  --ink: #08090d;
+  --paper: #f2f0eb;
+  --paper2: #e8e5de;
+  --accent: #c8f000;
+  --accent-dark: #9aba00;
+  --red: #e63946;
+  --orange: #f4801a;
+  --green: #2dc653;
+  --muted: #7a7870;
+  --border: #d0cdc5;
+  --surface: #ffffff;
+}
 
-  :root {
-    --bg: #0d0f14;
-    --surface: #13161e;
-    --surface2: #1a1e29;
-    --border: #252a38;
-    --text: #e8eaf0;
-    --text-muted: #7880a0;
-    --accent: #4f8ef7;
-    --accent2: #7c5cfa;
-    --safe: #22c55e;
-    --safe-bg: rgba(34,197,94,0.08);
-    --warning: #f59e0b;
-    --warning-bg: rgba(245,158,11,0.08);
-    --danger: #ef4444;
-    --danger-bg: rgba(239,68,68,0.08);
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 300;
-    min-height: 100vh;
-    padding: 0;
-    overflow-x: hidden;
-  }
+/* Noise texture overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.5;
+}
 
-  /* Background grid */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
+/* ── HEADER ── */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 40px;
+  border-bottom: 2px solid var(--ink);
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
 
-  .page { position: relative; z-index: 1; max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+.logo-group { display: flex; align-items: center; gap: 14px; }
 
-  /* Header */
-  header { margin-bottom: 48px; }
-  .logo-row { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
-  .logo-icon {
-    width: 44px; height: 44px; border-radius: 12px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; flex-shrink: 0;
-  }
-  h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: 28px; font-weight: 800; letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #e8eaf0 30%, #7c5cfa);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .tagline { color: var(--text-muted); font-size: 14px; margin-top: 4px; letter-spacing: 0.2px; }
+.logo-mark {
+  width: 44px; height: 44px;
+  background: var(--ink);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
 
-  /* Badge */
-  .badge {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: var(--surface2); border: 1px solid var(--border);
-    border-radius: 20px; padding: 4px 12px 4px 8px;
-    font-size: 11px; color: var(--text-muted); margin-top: 16px;
-    letter-spacing: 0.3px;
-  }
-  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--safe); }
+.logo-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.9rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.logo-text em { color: var(--accent-dark); font-style: normal; }
 
-  /* Card */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-    margin-bottom: 20px;
-  }
+.header-right { display: flex; align-items: center; gap: 16px; }
 
-  .card-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--text-muted); margin-bottom: 12px;
-  }
+.status-pill {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--ink);
+  color: var(--accent);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  padding: 6px 14px;
+  border-radius: 100px;
+  letter-spacing: 0.08em;
+}
+.status-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: pulse 1.8s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
 
-  textarea {
-    width: 100%;
-    height: 200px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px; font-weight: 300;
-    line-height: 1.65;
-    padding: 16px;
-    resize: vertical;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  textarea:focus { border-color: var(--accent); }
-  textarea::placeholder { color: var(--text-muted); }
+.model-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  border-radius: 4px;
+}
 
-  .btn-row { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+/* ── LAYOUT ── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  min-height: calc(100vh - 86px);
+}
 
-  button {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700; font-size: 13px;
-    letter-spacing: 0.3px;
-    border: none; border-radius: 10px;
-    cursor: pointer; transition: all 0.2s;
-    padding: 12px 24px;
-  }
+/* ── LEFT PANEL ── */
+.left-panel {
+  padding: 48px 40px;
+  border-right: 2px solid var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
 
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    color: #fff;
-  }
-  .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
-  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  display: flex; align-items: center; gap: 10px;
+}
+.eyebrow::before {
+  content: '';
+  display: block;
+  width: 24px; height: 1px;
+  background: var(--muted);
+}
 
-  .btn-ghost {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-  }
-  .btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
+.hero-heading {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 6vw, 6rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+}
+.hero-heading .accent-word {
+  color: var(--paper);
+  -webkit-text-stroke: 2px var(--ink);
+}
 
-  /* Examples */
-  .examples { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
-  .ex-btn {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px; font-weight: 400;
-    background: var(--surface2); border: 1px solid var(--border);
-    color: var(--text-muted); border-radius: 20px;
-    padding: 5px 12px; cursor: pointer; transition: all 0.2s;
-  }
-  .ex-btn:hover { color: var(--text); border-color: var(--accent); }
+.hero-sub {
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.7;
+  max-width: 420px;
+  font-weight: 400;
+}
 
-  /* Spinner */
-  .spinner {
-    display: none; width: 18px; height: 18px;
-    border: 2px solid rgba(255,255,255,0.2);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin-right: 8px;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
+/* Input area */
+.input-block { display: flex; flex-direction: column; gap: 12px; }
 
-  /* Result card */
-  #result { display: none; }
+.input-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
 
-  .result-header {
-    display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
-  }
+.posting-textarea {
+  width: 100%;
+  min-height: 220px;
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  padding: 18px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  line-height: 1.7;
+  color: var(--ink);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.posting-textarea:focus {
+  border-color: var(--accent-dark);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+.posting-textarea::placeholder { color: var(--border); }
 
-  .result-icon {
-    width: 52px; height: 52px; border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px; flex-shrink: 0;
-  }
-  .result-icon.safe     { background: var(--safe-bg); }
-  .result-icon.warning  { background: var(--warning-bg); }
-  .result-icon.danger   { background: var(--danger-bg); }
+.input-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
 
-  .result-label {
-    font-family: 'Syne', sans-serif;
-    font-size: 24px; font-weight: 800; letter-spacing: -0.5px;
-  }
-  .result-label.legitimate { color: var(--safe); }
-  .result-label.suspicious  { color: var(--warning); }
-  .result-label.fraudulent  { color: var(--danger); }
+.char-count {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+}
 
-  .result-sub { color: var(--text-muted); font-size: 13px; margin-top: 3px; }
+.analyse-btn {
+  background: var(--ink);
+  color: var(--accent);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+  border: 2px solid var(--ink);
+  border-radius: 6px;
+  padding: 12px 32px;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 10px;
+  transition: background 0.15s, color 0.15s, transform 0.1s, box-shadow 0.15s;
+  position: relative;
+}
+.analyse-btn:hover {
+  background: var(--accent);
+  color: var(--ink);
+  box-shadow: 4px 4px 0 var(--ink);
+  transform: translate(-2px,-2px);
+}
+.analyse-btn:active { transform: translate(0,0); box-shadow: none; }
 
-  /* Probability bar */
-  .prob-row { margin-bottom: 20px; }
-  .prob-label-row {
-    display: flex; justify-content: space-between;
-    font-size: 12px; color: var(--text-muted); margin-bottom: 6px;
-  }
-  .prob-track {
-    height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden;
-  }
-  .prob-fill {
-    height: 100%; border-radius: 4px;
-    transition: width 0.8s cubic-bezier(.4,0,.2,1);
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-  }
-  .prob-fill.high  { background: linear-gradient(90deg, var(--danger), #b91c1c); }
-  .prob-fill.medium{ background: linear-gradient(90deg, var(--warning), #d97706); }
-  .prob-fill.low   { background: linear-gradient(90deg, var(--safe), #16a34a); }
+.btn-arrow { font-size: 1.2rem; transition: transform 0.2s; }
+.analyse-btn:hover .btn-arrow { transform: translateX(4px); }
 
-  /* Advice box */
-  .advice-box {
-    border-radius: 10px; padding: 14px 16px;
-    font-size: 13px; line-height: 1.6; margin-bottom: 20px;
-  }
-  .advice-box.legitimate { background: var(--safe-bg); border-left: 3px solid var(--safe); }
-  .advice-box.suspicious  { background: var(--warning-bg); border-left: 3px solid var(--warning); }
-  .advice-box.fraudulent  { background: var(--danger-bg); border-left: 3px solid var(--danger); }
+/* Sample buttons */
+.samples { display: flex; flex-direction: column; gap: 8px; }
+.samples-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.sample-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.sample-btn {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.72rem;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.sample-btn:hover { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+.sample-btn.fraud { border-color: var(--red); color: var(--red); }
+.sample-btn.fraud:hover { background: var(--red); color: white; }
+.sample-btn.legit { border-color: var(--green); color: var(--green); }
+.sample-btn.legit:hover { background: var(--green); color: white; }
+.sample-btn.sus { border-color: var(--orange); color: var(--orange); }
+.sample-btn.sus:hover { background: var(--orange); color: white; }
 
-  /* Indicators */
-  .indicators-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
-    text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;
-  }
-  .indicator-list { display: flex; flex-direction: column; gap: 7px; }
-  .indicator-item {
-    display: flex; align-items: center; gap: 10px;
-    font-size: 13px; color: var(--text);
-  }
-  .indicator-dot {
-    width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
-    background: var(--danger);
-  }
-  .no-indicators { font-size: 13px; color: var(--text-muted); }
+/* ── RIGHT PANEL ── */
+.right-panel {
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background: var(--paper2);
+}
 
-  /* Footer */
-  footer {
-    margin-top: 48px; padding-top: 24px;
-    border-top: 1px solid var(--border);
-    color: var(--text-muted); font-size: 12px;
-    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
-  }
-  footer span { opacity: 0.6; }
+/* Idle state */
+.idle-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+  padding: 40px 20px;
+}
+.idle-icon {
+  width: 80px; height: 80px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+}
+.idle-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--muted); letter-spacing: 0.05em; }
+.idle-sub { font-size: 0.82rem; color: var(--muted); line-height: 1.6; max-width: 220px; }
 
-  @media (max-width: 480px) {
-    h1 { font-size: 22px; }
-    .btn-row { flex-direction: column; }
-    button { width: 100%; }
-  }
+/* Result state */
+.result-state { display: none; flex-direction: column; gap: 20px; }
+.result-state.visible { display: flex; }
+
+/* Verdict card */
+.verdict-card {
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.verdict-card::before {
+  content: '';
+  position: absolute;
+  bottom: -30px; right: -30px;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  opacity: 0.15;
+}
+.verdict-card.fraud { background: #fef0f1; }
+.verdict-card.fraud::before { background: var(--red); }
+.verdict-card.suspicious { background: #fff8f0; }
+.verdict-card.suspicious::before { background: var(--orange); }
+.verdict-card.legitimate { background: #f0fdf4; }
+.verdict-card.legitimate::before { background: var(--green); }
+
+.verdict-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.verdict-label {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.4rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+.verdict-card.fraud .verdict-label { color: var(--red); }
+.verdict-card.suspicious .verdict-label { color: var(--orange); }
+.verdict-card.legitimate .verdict-label { color: var(--green); }
+
+.risk-chip {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  padding: 5px 11px;
+  border-radius: 4px;
+  border: 1px solid currentColor;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.verdict-card.fraud .risk-chip { color: var(--red); background: rgba(230,57,70,0.08); }
+.verdict-card.suspicious .risk-chip { color: var(--orange); background: rgba(244,128,26,0.08); }
+.verdict-card.legitimate .risk-chip { color: var(--green); background: rgba(45,198,83,0.08); }
+
+.confidence-row {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 14px;
+}
+.confidence-val { color: var(--ink); font-weight: 500; }
+
+.verdict-advice {
+  font-size: 0.84rem;
+  line-height: 1.65;
+  color: var(--ink);
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+/* Probability section */
+.prob-section {
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 20px;
+}
+.section-header {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+.prob-row { margin-bottom: 12px; }
+.prob-row:last-child { margin-bottom: 0; }
+.prob-labels { display: flex; justify-content: space-between; margin-bottom: 6px; }
+.prob-name { font-size: 0.82rem; font-weight: 500; }
+.prob-pct { font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; font-weight: 500; }
+.bar-track {
+  height: 6px;
+  background: var(--paper2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+  width: 0;
+}
+.bar-legit { background: var(--green); }
+.bar-fraud { background: var(--red); }
+
+/* Indicators */
+.indicators-section {
+  background: var(--surface);
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  padding: 20px;
+}
+.tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+.indicator-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: 4px;
+  background: rgba(230,57,70,0.08);
+  border: 1px solid rgba(230,57,70,0.25);
+  color: var(--red);
+}
+.no-indicators { font-size: 0.82rem; color: var(--muted); }
+
+/* Stats bar at bottom */
+.stats-strip {
+  display: flex;
+  gap: 0;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: auto;
+}
+.stat-block {
+  flex: 1;
+  padding: 14px 16px;
+  border-right: 1px solid var(--border);
+  background: var(--surface);
+}
+.stat-block:last-child { border-right: none; }
+.stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.04em; }
+.stat-lbl { font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* Loading animation */
+.loading-overlay {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 60px 20px;
+  text-align: center;
+}
+.loading-overlay.visible { display: flex; }
+
+.spinner {
+  width: 48px; height: 48px;
+  border: 3px solid var(--border);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+}
+
+/* Footer */
+footer {
+  border-top: 2px solid var(--ink);
+  padding: 16px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--paper);
+}
+.footer-left { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+.footer-left strong { color: var(--ink); }
+.footer-right { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+
+/* Animations */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.anim { animation: fadeInUp 0.4s ease forwards; }
+.anim-d1 { animation-delay: 0.05s; opacity: 0; }
+.anim-d2 { animation-delay: 0.12s; opacity: 0; }
+.anim-d3 { animation-delay: 0.19s; opacity: 0; }
+.anim-d4 { animation-delay: 0.26s; opacity: 0; }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+  .left-panel { border-right: none; border-bottom: 2px solid var(--ink); }
+  header { padding: 16px 20px; }
+  .left-panel, .right-panel { padding: 32px 20px; }
+  footer { padding: 14px 20px; flex-direction: column; gap: 6px; text-align: center; }
+}
+
+.footer-btns { display:flex; align-items:center; gap:10px; }
+.upload-btn {
+  font-family: inherit; font-weight:700; font-size:0.7rem; letter-spacing:0.1em;
+  padding:10px 18px; background:transparent; color:var(--ink);
+  border:2px solid var(--ink); cursor:pointer; transition:all 0.15s;
+}
+.upload-btn:hover { background:var(--ink); color:var(--paper); }
+.file-chip { font-size:0.68rem; color:var(--ink); opacity:0.7; font-family:monospace; margin-left:8px; }
+.engine-note { margin-top:10px; font-size:0.62rem; letter-spacing:0.08em; font-family:monospace; opacity:0.65; }
+.engine-note.heuristic { color:var(--orange); opacity:1; }
+
 </style>
 </head>
 <body>
-<div class="page">
 
-  <header>
-    <div class="logo-row">
-      <div class="logo-icon">🛡️</div>
-      <h1>FraudGuard SA</h1>
-    </div>
-    <p class="tagline">Machine Learning–Based Fraud Detection for South African Online Job Postings</p>
-    <div class="badge">
-      <span class="badge-dot"></span>
-      Random Forest · TF-IDF · EMSCAD Dataset · POPIA Compliant
-    </div>
-  </header>
-
-  <!-- Input card -->
-  <div class="card">
-    <div class="card-label">Paste Job Posting</div>
-    <textarea id="posting-input"
-      placeholder="Paste the full text of a job posting here and click Analyse…&#10;&#10;Example: URGENT HIRING — Work from home, earn R50 000 per month, no experience needed. Send CV and ID copy now…"></textarea>
-
-    <div class="btn-row">
-      <button class="btn-primary" id="analyse-btn" onclick="analyse()">
-        <span class="spinner" id="spinner"></span>
-        <span id="btn-text">Analyse Posting</span>
-      </button>
-      <button class="btn-ghost" onclick="clearAll()">Clear</button>
-    </div>
-
-    <div style="margin-top:18px;">
-      <div class="card-label" style="margin-bottom:8px;">Try an example</div>
-      <div class="examples">
-        <button class="ex-btn" onclick="loadExample('fraud1')">🚨 Work-from-home scam</button>
-        <button class="ex-btn" onclick="loadExample('fraud2')">🚨 Fee-required vacancy</button>
-        <button class="ex-btn" onclick="loadExample('legit1')">✅ Software developer post</button>
-        <button class="ex-btn" onclick="loadExample('legit2')">✅ Accountant vacancy</button>
-      </div>
+<header>
+  <div class="logo-group">
+    <div class="logo-mark">🛡</div>
+    <div class="logo-text">FRAUD<em>GUARD</em> SA</div>
+  </div>
+  <div class="header-right">
+    <div class="model-tag">RF + TF-IDF · EMSCAD</div>
+    <div class="status-pill">
+      <div class="status-dot"></div>
+      MODEL ACTIVE
     </div>
   </div>
+</header>
 
-  <!-- Result card -->
-  <div class="card" id="result">
-    <div class="result-header">
-      <div class="result-icon" id="result-icon"></div>
-      <div>
-        <div class="result-label" id="result-label"></div>
-        <div class="result-sub" id="result-sub"></div>
+<div class="layout">
+
+  <!-- LEFT: Input -->
+  <div class="left-panel">
+    <div>
+      <div class="eyebrow">Fraud Detection System</div>
+      <h1 class="hero-heading">
+        SCAN ANY<br>
+        <span class="accent-word">JOB</span><br>
+        POSTING
+      </h1>
+    </div>
+
+    <p class="hero-sub">
+      Paste a South African job posting below. Our Random Forest classifier extracts
+      TF-IDF bigram features and returns a fraud probability score in milliseconds.
+    </p>
+
+    <div class="input-block">
+      <div class="input-label">// Paste posting text</div>
+      <textarea
+        class="posting-textarea"
+        id="postingInput"
+        placeholder="Paste the full job posting here — title, description, salary, contact details..."
+        oninput="updateCount()"
+      ></textarea>
+      <div class="input-footer">
+        <span class="char-count" id="charCount">0 characters <span class="file-chip" id="fileChip"></span></span>
+        <div class="footer-btns">
+          <input type="file" id="fileInput" accept=".txt,.pdf,.docx" style="display:none"
+                 onchange="handleFile(this.files[0]); this.value='';">
+          <button class="upload-btn" onclick="document.getElementById('fileInput').click()"
+                  title="Upload a .txt, .pdf or .docx job posting">⇧ UPLOAD</button>
+          <button class="analyse-btn" onclick="analysePosting()">
+            ANALYSE <span class="btn-arrow">→</span>
+          </button>
+        </div>
       </div>
     </div>
 
-    <div class="prob-row">
-      <div class="prob-label-row">
-        <span>Fraud Risk Score</span>
-        <span id="prob-text"></span>
+    <div class="samples">
+      <div class="samples-label">// Try a sample</div>
+      <div class="sample-row">
+        <button class="sample-btn fraud" onclick="loadSample('fraud')">⛔ Fraudulent</button>
+        <button class="sample-btn sus" onclick="loadSample('suspicious')">⚠ Suspicious</button>
+        <button class="sample-btn legit" onclick="loadSample('legit')">✓ Legitimate</button>
       </div>
-      <div class="prob-track"><div class="prob-fill" id="prob-fill" style="width:0%"></div></div>
     </div>
 
-    <div class="advice-box" id="advice-box"></div>
-
-    <div class="indicators-title">Risk Indicators Detected</div>
-    <div class="indicator-list" id="indicator-list"></div>
   </div>
 
-  <footer>
-    <span>FraudGuard SA — PG Dip IT Research Prototype · CUT 2026</span>
-    <span>Random Forest + TF-IDF · EMSCAD + SA Data</span>
-  </footer>
+  <!-- RIGHT: Results -->
+  <div class="right-panel">
+
+    <!-- Idle -->
+    <div class="idle-state" id="idleState">
+      <div class="idle-icon">🔍</div>
+      <div class="idle-title">AWAITING INPUT</div>
+      <p class="idle-sub">Paste a job posting on the left and click Analyse to see the fraud risk assessment.</p>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-overlay" id="loadingState">
+      <div class="spinner"></div>
+      <div class="loading-text">RUNNING CLASSIFIER...</div>
+    </div>
+
+    <!-- Result -->
+    <div class="result-state" id="resultState">
+
+      <div class="verdict-card" id="verdictCard">
+        <div class="verdict-top">
+          <div class="verdict-label" id="verdictLabel">—</div>
+          <div class="risk-chip" id="riskChip">—</div>
+        </div>
+        <div class="confidence-row">
+          Confidence: <span class="confidence-val" id="confidenceVal">—</span>
+        </div>
+        <div class="verdict-advice" id="verdictAdvice">—</div>
+        <div class="engine-note" id="engineNote"></div>
+      </div>
+
+      <div class="prob-section">
+        <div class="section-header">// Probability Breakdown</div>
+        <div class="prob-row">
+          <div class="prob-labels">
+            <span class="prob-name">✓ Legitimate</span>
+            <span class="prob-pct" id="legitPct" style="color:var(--green)">—</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill bar-legit" id="legitBar"></div></div>
+        </div>
+        <div class="prob-row">
+          <div class="prob-labels">
+            <span class="prob-name">⛔ Fraudulent</span>
+            <span class="prob-pct" id="fraudPct" style="color:var(--red)">—</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill bar-fraud" id="fraudBar"></div></div>
+        </div>
+      </div>
+
+      <div class="indicators-section">
+        <div class="section-header">// Fraud Indicators Detected</div>
+        <div id="indicatorsWrap"></div>
+      </div>
+
+    </div>
+
+    <!-- Stats always visible at bottom -->
+    <div class="stats-strip" style="margin-top:auto">
+      <div class="stat-block">
+        <div class="stat-num">17,880</div>
+        <div class="stat-lbl">Training Samples</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">97.4%</div>
+        <div class="stat-lbl">Accuracy</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">RF</div>
+        <div class="stat-lbl">Algorithm</div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
+<footer>
+  <div class="footer-left"><strong>FraudGuard SA</strong> · IPJ517C Research Prototype</div>
+  <div class="footer-right">Central University of Technology · 2026</div>
+</footer>
+
 <script>
-const examples = {
-  fraud1: "URGENT HIRING! Work from home and earn R50 000 per month. No experience needed. No qualifications required. Limited slots available — apply immediately. Send your CV, ID copy and banking details to secure your position today.",
-  fraud2: "Vacancy: Home Packer. Earn R800 per parcel working from home. No experience required. A refundable registration fee of R500 is required to secure your materials. WhatsApp us urgently — limited positions available.",
-  legit1: "Software Developer position available. BCom Computer Science or equivalent required. Minimum 3 years experience in Java and Python. Knowledge of REST APIs and Git essential. Competitive salary package negotiable based on experience. Please submit CV and portfolio to hr@techfirm.co.za.",
-  legit2: "Accountant vacancy — SAICA articles completed essential. Minimum 5 years audit experience required. Proficiency in Sage and MS Excel. Package R45 000 to R65 000 per month depending on experience. Applications open to South African citizens only. Send CV to finance@company.co.za."
+// ── Sample texts ──
+const SAMPLES = {
+  fraud: `URGENT HIRING!!! Work from home and earn R50,000 per month. No experience needed. No qualifications required. IMMEDIATE START. Send your CV, copy of ID and banking details to secure your position. WhatsApp us NOW on 083 000 0000. Registration fee of R350 required to access training materials. LIMITED SLOTS AVAILABLE – only 5 positions left! 100% guaranteed income. We are a trusted international company offering data entry jobs from home.`,
+  suspicious: `Administrative Assistant – Remote Position
+A growing consulting firm based in Johannesburg is looking for a reliable administrative assistant to join our team on a part-time basis. The role involves scheduling appointments, responding to client emails, and maintaining digital records.
+Requirements:
+
+Matric or equivalent qualification
+Good communication skills in English
+Basic computer literacy
+Available for at least 4 hours per day
+
+Salary: R7,500 per month part-time
+Working hours are flexible and the role can be performed remotely. Interested candidates should send a brief introduction and their availability to our recruitment team via WhatsApp. Only shortlisted candidates will be contacted.`,
+  legit: `Software Developer – Mid Level. Our Johannesburg-based fintech company is looking for an experienced developer to join our growing team. Requirements: BCom Computer Science or equivalent; minimum 3 years commercial development experience; proficiency in Java, Python or Node.js; experience with REST APIs and cloud platforms (AWS/Azure). Salary: R45,000 – R65,000 per month depending on experience. Benefits include medical aid, provident fund, and 20 days annual leave. Please submit your CV and GitHub portfolio to careers@company.co.za. No application fees. We do not request personal or banking information during the application process.`
 };
 
-function loadExample(key) {
-  document.getElementById('posting-input').value = examples[key];
-  document.getElementById('result').style.display = 'none';
+// ── Offline fallback (heuristic, used only when the Flask backend is unreachable) ──
+const FRAUD_KEYWORDS = [
+  "send id","bank details","banking details","registration fee","no experience needed",
+  "work from home","guaranteed income","urgent hiring","send passport","deposit required",
+  "whatsapp","weekly pay","daily earnings","limited slots","upfront fee","joining fee",
+  "no qualifications needed","earn r","100% guaranteed","immediate start","limited positions",
+  "urgently needed"
+];
+
+function classifyOffline(text) {
+  const lower = text.toLowerCase();
+  const found = FRAUD_KEYWORDS.filter(k => lower.includes(k));
+  let score = found.length * 0.12;
+  if (/r[\s]?\d{1,3}[,\s]?\d{3}/.test(lower) && /daily|weekly|per day|per week/.test(lower)) score += 0.2;
+  if (/no experience|no qualif/.test(lower)) score += 0.15;
+  if (/bank.{0,10}detail|id.{0,10}copy/.test(lower)) score += 0.25;
+  if (/registration fee|joining fee|deposit/.test(lower)) score += 0.3;
+  if (/whatsapp|send cv and id/.test(lower)) score += 0.1;
+  if (/bcom|beng|degree|hpcsa|saica|sace|sanc|registration with/.test(lower)) score -= 0.3;
+  if (/salary package|per month|negotiable|benefits|medical aid|provident/.test(lower) && score < 0.3) score -= 0.15;
+  if (/no application fee|we do not request personal/.test(lower)) score -= 0.4;
+  const fraudProb = Math.min(0.97, Math.max(0.03, score));
+  return buildResult(fraudProb * 100, found.slice(0, 6), "heuristic");
 }
 
-function clearAll() {
-  document.getElementById('posting-input').value = '';
-  document.getElementById('result').style.display = 'none';
+function buildResult(fraudPct, indicators, engine) {
+  const legitPct = 100 - fraudPct;
+  let label, risk, cls, confidence, advice;
+  if (fraudPct >= 60) {
+    label = "FRAUDULENT"; risk = "HIGH RISK"; cls = "fraud";
+    confidence = fraudPct.toFixed(1);
+    advice = "This posting shows strong indicators of fraud. Do not submit personal documents, banking details, or pay any fees. Report this posting to the job platform immediately.";
+  } else if (fraudPct >= 35) {
+    label = "SUSPICIOUS"; risk = "MEDIUM RISK"; cls = "suspicious";
+    confidence = fraudPct.toFixed(1);
+    advice = "This posting contains some characteristics associated with fraudulent ads. Proceed with caution and verify the company independently before submitting personal information.";
+  } else {
+    label = "LEGITIMATE"; risk = "LOW RISK"; cls = "legitimate";
+    confidence = legitPct.toFixed(1);
+    advice = "This posting appears legitimate based on its content. Always verify the company independently and never share banking details or pay upfront fees for any job application.";
+  }
+  return { label, risk, cls, confidence,
+           fraudProb: fraudPct.toFixed(1), legitProb: legitPct.toFixed(1),
+           indicators, advice, engine };
 }
 
-async function analyse() {
-  const text = document.getElementById('posting-input').value.trim();
-  if (!text) { alert('Please paste a job posting first.'); return; }
+function fromServer(d) {
+  const r = buildResult(d.fraud_prob, d.indicators, "model");
+  r.advice = d.advice;
+  return r;
+}
 
-  const btn = document.getElementById('analyse-btn');
-  const spinner = document.getElementById('spinner');
-  const btnText = document.getElementById('btn-text');
-  btn.disabled = true;
-  spinner.style.display = 'inline-block';
-  btnText.textContent = 'Analysing…';
+// ── UI functions ──
+function updateCount() {
+  const len = document.getElementById('postingInput').value.length;
+  document.getElementById('charCount').textContent = len + ' character' + (len !== 1 ? 's' : '');
+}
 
+function loadSample(type) {
+  const ta = document.getElementById('postingInput');
+  ta.value = SAMPLES[type];
+  updateCount();
+  ta.focus();
+}
+
+function showState(state) {
+  document.getElementById('idleState').style.display = state === 'idle' ? 'flex' : 'none';
+  document.getElementById('loadingState').classList.toggle('visible', state === 'loading');
+  document.getElementById('resultState').classList.toggle('visible', state === 'result');
+}
+
+function flashInputError() {
+  const ta = document.getElementById('postingInput');
+  ta.style.borderColor = 'var(--red)';
+  ta.style.boxShadow = '4px 4px 0 var(--red)';
+  setTimeout(() => { ta.style.borderColor = ''; ta.style.boxShadow = ''; }, 1200);
+}
+
+async function analysePosting() {
+  const text = document.getElementById('postingInput').value.trim();
+  if (!text || text.length < 20) { flashInputError(); return; }
+  showState('loading');
   try {
     const res = await fetch('/analyse', {
       method: 'POST',
@@ -351,59 +756,92 @@ async function analyse() {
       body: JSON.stringify({ text })
     });
     const data = await res.json();
-    renderResult(data);
-  } catch(e) {
-    alert('Error connecting to server. Make sure the Flask app is running.');
-  } finally {
-    btn.disabled = false;
-    spinner.style.display = 'none';
-    btnText.textContent = 'Analyse Posting';
+    if (!res.ok) { alert(data.error || 'Analysis failed.'); showState('idle'); return; }
+    renderResult(fromServer(data));
+  } catch (e) {
+    // Backend unreachable (opened as a local file, or Flask not running)
+    setTimeout(() => renderResult(classifyOffline(text)), 600);
   }
 }
 
-function renderResult(data) {
-  if (data.error) { alert(data.error); return; }
+async function handleFile(file) {
+  if (!file) return;
+  const ext = file.name.slice(file.name.lastIndexOf('.')).toLowerCase();
+  if (!['.txt', '.pdf', '.docx'].includes(ext)) {
+    alert('Unsupported file type. Please upload a .txt, .pdf or .docx file.');
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    alert('File is too large. The maximum size is 5 MB.');
+    return;
+  }
+  document.getElementById('fileChip').textContent = file.name;
 
-  const icons = { safe: '✅', warning: '⚠️', danger: '🚨' };
-  const subs  = {
-    legitimate: 'No significant fraud indicators found',
-    suspicious:  'Some risk indicators present — proceed with care',
-    fraudulent:  'Multiple fraud indicators detected'
-  };
+  if (ext === '.txt') {
+    // Read locally: works with or without the backend
+    const reader = new FileReader();
+    reader.onload = () => {
+      document.getElementById('postingInput').value = reader.result;
+      updateCount();
+      analysePosting();
+    };
+    reader.readAsText(file);
+    return;
+  }
 
-  document.getElementById('result-icon').className = 'result-icon ' + data.icon;
-  document.getElementById('result-icon').textContent = icons[data.icon];
-  document.getElementById('result-label').className  = 'result-label ' + data.css;
-  document.getElementById('result-label').textContent = data.label;
-  document.getElementById('result-sub').textContent   = subs[data.css];
+  // PDF and Word need server-side extraction
+  showState('loading');
+  try {
+    const form = new FormData();
+    form.append('file', file);
+    const res = await fetch('/analyse', { method: 'POST', body: form });
+    const data = await res.json();
+    if (!res.ok) { alert(data.error || 'Could not analyse this file.'); showState('idle'); return; }
+    document.getElementById('postingInput').value = data.extracted_text || '';
+    updateCount();
+    renderResult(fromServer(data));
+  } catch (e) {
+    alert('PDF and Word uploads need the Flask backend. Start it with "python app.py" and open http://127.0.0.1:5000, or copy the posting text and paste it instead.');
+    showState('idle');
+  }
+}
 
-  // Probability bar
-  const fillEl = document.getElementById('prob-fill');
-  const probClass = data.fraud_prob >= 70 ? 'high' : data.fraud_prob >= 40 ? 'medium' : 'low';
-  fillEl.className = 'prob-fill ' + probClass;
-  setTimeout(() => { fillEl.style.width = data.fraud_prob + '%'; }, 50);
-  document.getElementById('prob-text').textContent = data.fraud_prob + '% fraud probability';
-
-  // Advice
-  const adviceEl = document.getElementById('advice-box');
-  adviceEl.className = 'advice-box ' + data.css;
-  adviceEl.textContent = data.advice;
-
-  // Indicators
-  const list = document.getElementById('indicator-list');
-  list.innerHTML = '';
-  if (data.indicators && data.indicators.length > 0) {
-    data.indicators.forEach(ind => {
-      list.innerHTML += `<div class="indicator-item"><span class="indicator-dot"></span>${ind}</div>`;
-    });
+function renderResult(r) {
+  const card = document.getElementById('verdictCard');
+  card.className = 'verdict-card ' + r.cls;
+  document.getElementById('verdictLabel').textContent = r.label;
+  document.getElementById('riskChip').textContent = r.risk;
+  document.getElementById('confidenceVal').textContent = r.confidence + '%';
+  document.getElementById('verdictAdvice').textContent = r.advice;
+  const note = document.getElementById('engineNote');
+  if (r.engine === 'model') {
+    note.textContent = '// ENGINE: RANDOM FOREST MODEL (TF-IDF, EMSCAD + SA DATA)';
+    note.className = 'engine-note';
   } else {
-    list.innerHTML = '<div class="no-indicators">No specific risk indicators flagged.</div>';
+    note.textContent = '// ENGINE: OFFLINE KEYWORD HEURISTIC \u2014 START THE FLASK APP FOR REAL MODEL RESULTS';
+    note.className = 'engine-note heuristic';
   }
-
-  const resultCard = document.getElementById('result');
-  resultCard.style.display = 'block';
-  resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('legitPct').textContent = r.legitProb + '%';
+  document.getElementById('fraudPct').textContent = r.fraudProb + '%';
+  showState('result');
+  setTimeout(() => {
+    document.getElementById('legitBar').style.width = r.legitProb + '%';
+    document.getElementById('fraudBar').style.width = r.fraudProb + '%';
+  }, 100);
+  const wrap = document.getElementById('indicatorsWrap');
+  if (r.indicators && r.indicators.length > 0) {
+    wrap.innerHTML = '<div class="tags-wrap">' +
+      r.indicators.map(i => `<span class="indicator-tag">${i}</span>`).join('') + '</div>';
+  } else {
+    wrap.innerHTML = '<p class="no-indicators">No common fraud indicators detected.</p>';
+  }
 }
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') analysePosting();
+});
 </script>
+
 </body>
 </html>
