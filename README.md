@@ -4,7 +4,7 @@ A machine learning tool that helps South African job seekers check whether a job
 
 Developed for **IPJ527C: Advanced Research Project B (Alpha Version)** .
 
-**Author:** Olipelwe Daniel Msuthwana (221040668)  
+**Author:** Olipelwe Daniel Msuthwana
 **Supervisor:** Dr. P. Phoobane, Ph.D.
 ---
 
