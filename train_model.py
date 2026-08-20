@@ -5,9 +5,9 @@ Data sources
   1. EMSCAD          fake_job_postings.csv            17,880 postings (Vidros et al., 2017)
   2. Synthetic SA    sa_job_postings.csv              400 postings, template-generated
                                                       from documented SA scam patterns
-  3. Real SA         sa_job_postings_with_descriptions.csv
+  3. Additionaly SA data         sa_job_postings_with_descriptions.csv
                                                       138 legitimate postings collected
-                                                      16 Aug 2026 from CareerJunction and
+                                                      from CareerJunction and
                                                       PNet, each traceable to a live job ID
 
 Evaluation design
@@ -54,7 +54,7 @@ Etr_X, Ete_X, Etr_y, Ete_y = train_test_split(
 # ── 2. Synthetic SA ─────────────────────────────────────────────
 syn = pd.read_csv("sa_job_postings.csv")
 
-# ── 3. Real SA ──────────────────────────────────────────────────
+# ── 3.Additional SA sata ──────────────────────────────────────────────────
 real = pd.read_csv("sa_job_postings_with_descriptions.csv")
 real = real[real["description"].notna()
             & (real["description"].astype(str).str.len() > 80)].copy()
@@ -64,7 +64,7 @@ hold = real[real["description_source"].isin(HIGH_FIDELITY)]
 train_real = real[~real["description_source"].isin(HIGH_FIDELITY)]
 
 print(f"EMSCAD train {len(Etr_X)} / test {len(Ete_X)}")
-print(f"Synthetic SA {len(syn)}  |  Real SA usable {len(real)} "
+print(f"Synthetic SA {len(syn)}  |  Additinal SA data usable {len(real)} "
       f"(validation hold-out {len(hold)}, trainable {len(train_real)})\n")
 
 # ── 4. Evaluation model ─────────────────────────────────────────
@@ -89,7 +89,7 @@ print(f"  Legitimate ({len(l)}): correct {(l <= .35).mean()*100:.1f}% | "
 
 hp = model.predict_proba(hold["text"].tolist())[:, 1]
 n = len(hp)
-print(f"\nReal SA validation set ({n} postings, never seen in training):")
+print(f"\nAdditional SA data validation set ({n} postings, never seen in training):")
 print(f"  Legitimate {(hp <= .35).sum()/n*100:.1f}% | "
       f"Suspicious {((hp > .35) & (hp <= .60)).sum()/n*100:.1f}% | "
       f"Fraudulent {(hp > .60).sum()/n*100:.1f}% | mean fraud probability {hp.mean()*100:.1f}%")
